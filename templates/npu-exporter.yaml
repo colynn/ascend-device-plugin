@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: npu-exporter
+  labels:
+    app: npu-exporter
+    {{- include "common.labels.standard" . | nindent 4 }}
+  namespace: monitoring
+spec:
+  selector:
+    matchLabels:
+      app: npu-exporter
+  template:
+    metadata:
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+      labels:
+        app: npu-exporter
+    spec:
+      {{- include "atlas-device-plgin.imagePullSecrets" . | nindent 6 }}
+      # nodeSelector:
+      #   viper.sensetime.com/node-npu: "True"
+      containers:
+        - name: npu-exporter
+          image: {{ include "npu-exporter.fullimage" . }}
+          imagePullPolicy: IfNotPresent
+          command: [ "/bin/bash", "-c", "--"]
+          # NOTE: enable HTTPS needs to use
+          # ./cert-importer -certFile=../cert/rsa_aes.crt -keyFile=../cert/rsa_aes_private.key to import certificate
+          # pair firstly
+          args: [ "umask 027;npu-exporter -port=8082 -ip=0.0.0.0  -updateTime=5 -logFile=/var/log/mindx-dl/npu-exporter/npu-exporter.log -logLevel=0 -containerMode=docker" ]
+          resources:
+            requests:
+              memory: {{ .Values.exporter.resources.requests.memory }}
+              cpu: {{ .Values.exporter.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.exporter.resources.limits.memory }}
+              cpu: {{ .Values.exporter.resources.limits.cpu }}
+          securityContext:
+            privileged: true
+            readOnlyRootFilesystem: true
+            runAsUser: 0
+            runAsGroup: 0
+          ports:
+          - name: http
+            containerPort: 8082
+            protocol: TCP
+          volumeMounts:
+          - name: log-npu-exporter
+            mountPath: /var/log/mindx-dl/npu-exporter
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+          - name: ascend-driver
+            mountPath: /usr/local/Ascend/driver
+            readOnly: true
+          - name: ascend-dcmi
+            mountPath: /usr/local/dcmi
+            readOnly: true
+          - name: sys
+            mountPath: /sys
+            readOnly: true
+          - name: docker-shim  # delete when only use containerd
+            mountPath: /var/run/dockershim.sock
+            readOnly: true
+          - name: docker  # delete when only use containerd
+            mountPath: /var/run/docker
+            readOnly: true
+          - name: containerd
+            mountPath: /run/containerd
+            readOnly: true
+          - name: tmp
+            mountPath: /tmp
+      volumes:
+        - name: log-npu-exporter
+          hostPath:
+            path: /var/log/mindx-dl/npu-exporter
+            type: DirectoryOrCreate
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+        - name: ascend-driver
+          hostPath:
+            path: /usr/local/Ascend/driver
+        - name: ascend-dcmi
+          hostPath:
+            path: /usr/local/dcmi
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: docker-shim # delete when only use containerd
+          hostPath:
+            path: /var/run/dockershim.sock
+        - name: docker  # delete when only use containerd
+          hostPath:
+            path: /var/run/docker
+        - name: containerd
+          hostPath:
+            path: /run/containerd
+        - name: tmp
+          hostPath:
+            path: /tmp
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 180
+      tolerations:
+        - operator: Exists
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: npu-exporter
+  labels:
+    k8s-app: npu-exporter
+  namespace: monitoring
+spec:
+  ports:
+    - port: 8082
+      targetPort: 8082
+      protocol: TCP
+      name: http-metrics
+  selector:
+    app: npu-exporter
+  type: ClusterIP

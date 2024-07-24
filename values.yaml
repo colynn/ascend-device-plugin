@@ -1,0 +1,45 @@
+global:
+  dockerRegistry: "10.151.3.75"
+
+image:
+  pullSecrets: ["harbor"]
+  plugin:
+    repository: ascend-mindxdl/device-plugin
+    tag: 5.0.1
+  exporter:
+    repository: ascend-mindxdl/npu-exporter
+    tag: v6.0.0-alpha
+
+
+initContainers:
+  repository: pingcap/busybox
+  tag: 1.34.1
+
+volcano:
+  enabled: true
+  scheduler:
+    repository:  ascend-mindxdl/volcano-scheduler
+    tag: 5.0.1-v1.7.0
+  controller:
+    repository:  ascend-mindxdl/volcano-controller
+    tag: 5.0.1-v1.7.0
+
+devicePlugin:
+  resources:
+    requests:
+      memory: 500Mi
+      cpu: 500m
+    limits:
+      memory: 500Mi
+      cpu: 500m
+  logLevel: 0
+
+exporter:
+  resources:
+    limits:
+      cpu: 200m
+      memory: 1000Mi
+    requests:
+      cpu: 100m
+      memory: 500Mi
+  

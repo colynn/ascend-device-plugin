@@ -1,0 +1,25 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    k8s-app: npu-exporter
+    {{- include "common.labels.standard" . | nindent 4 }}
+  name: npu-exporter
+  namespace: monitoring
+spec:
+  jobLabel: k8s-app
+  endpoints:
+  - port: http-metrics
+    interval: 5s
+    scrapeTimeout: 5s
+    honorLabels: true
+    path: /metrics
+    params:
+      name:
+      - npu
+  selector:
+    matchLabels:
+      k8s-app: npu-exporter
+  namespaceSelector:
+    matchNames:
+    - monitoring
