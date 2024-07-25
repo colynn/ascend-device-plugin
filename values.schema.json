@@ -5,6 +5,9 @@
         "devicePlugin": {
             "type": "object",
             "properties": {
+                "logLevel": {
+                    "type": "integer"
+                },
                 "resources": {
                     "type": "object",
                     "properties": {
@@ -103,6 +106,47 @@
                     "type": "array",
                     "items": {
                         "type": "string"
+                    }
+                }
+            }
+        },
+        "initContainers": {
+            "type": "object",
+            "properties": {
+                "repository": {
+                    "type": "string"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "volcano": {
+            "type": "object",
+            "properties": {
+                "controller": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "scheduler": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
                     }
                 }
             }
