@@ -1,9 +1,4 @@
 {{- if .Values.volcano.enabled }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: volcano-system
----
 # Source: volcano/templates/scheduler.yaml
 apiVersion: v1
 kind: ConfigMap

@@ -1,0 +1,11 @@
+{{- if .Values.volcano.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: volcano-system
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mindx-dl
+{{- end }}
