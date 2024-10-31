@@ -17,6 +17,14 @@
 {{- end }}
 
 
+{{- define "ascend-noded.fullimage" -}}
+{{- .Values.global.dockerRegistry -}}/{{- .Values.volcano.noded.repository -}}:{{- .Values.volcano.noded.tag -}}
+{{- end }}
+
+{{- define "ascend-clusterd.fullimage" -}}
+{{- .Values.global.dockerRegistry -}}/{{- .Values.volcano.clusterd.repository -}}:{{- .Values.volcano.clusterd.tag -}}
+{{- end }}
+
 {{- define "initContainers.fullimage" -}}
 {{- .Values.global.dockerRegistry -}}/{{- .Values.initContainers.repository -}}:{{- .Values.initContainers.tag -}}
 {{- end }}
