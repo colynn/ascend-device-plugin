@@ -124,6 +124,17 @@
         "volcano": {
             "type": "object",
             "properties": {
+                "clusterd": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
+                },
                 "controller": {
                     "type": "object",
                     "properties": {
@@ -137,6 +148,17 @@
                 },
                 "enabled": {
                     "type": "boolean"
+                },
+                "noded": {
+                    "type": "object",
+                    "properties": {
+                        "repository": {
+                            "type": "string"
+                        },
+                        "tag": {
+                            "type": "string"
+                        }
+                    }
                 },
                 "scheduler": {
                     "type": "object",

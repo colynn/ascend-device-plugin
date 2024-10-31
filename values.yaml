@@ -5,7 +5,7 @@ image:
   pullSecrets: ["harbor"]
   plugin:
     repository: ascend-mindxdl/device-plugin
-    tag: 5.0.1
+    tag: 6.0.2.1
   exporter:
     repository: ascend-mindxdl/npu-exporter
     tag: v6.0.0-alpha
@@ -18,11 +18,17 @@ initContainers:
 volcano:
   enabled: true
   scheduler:
-    repository:  ascend-mindxdl/volcano-scheduler
-    tag: 5.0.1-v1.7.0
+    repository: ascend-mindxdl/volcano-scheduler
+    tag: 6.0.2-v1.7.0
   controller:
-    repository:  ascend-mindxdl/volcano-controller
-    tag: 5.0.1-v1.7.0
+    repository: ascend-mindxdl/volcano-controller
+    tag: 6.0.2-v1.7.0
+  noded:
+    repository: ascend-mindxdl/noded
+    tag: v6.0.RC2
+  clusterd:
+    repository: ascend-mindxdl/clusterd
+    tag: v6.0.RC2
 
 devicePlugin:
   resources:

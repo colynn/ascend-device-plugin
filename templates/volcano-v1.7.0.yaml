@@ -16,20 +16,30 @@ data:
     tiers:
     - plugins:
       - name: priority
+        enableNodeOrder: false
       - name: gang
+        enableNodeOrder: false
       - name: conformance 
-      - name: volcano-npu_v5.0.1_linux-aarch64
+        enableNodeOrder: false
+      - name: volcano-npu_v6.0.RC2.1_linux-aarch64
     - plugins:
       - name: drf
+        enableNodeOrder: false
       - name: predicates
+        enableNodeOrder: false
+        arguments:
+          predicate.GPUSharingEnable: false
+          predicate.GPUNumberEnable: false
       - name: proportion
+        enableNodeOrder: false
       - name: nodeorder
       - name: binpack
+        enableNodeOrder: false
     configurations:
       - name: selector
         arguments: {"host-arch":"huawei-arm|huawei-x86"}
       - name: init-params
-        arguments: {"grace-over-time":"900","presetVirtualDevice":"false"}
+        arguments: {"grace-over-time":"900","presetVirtualDevice":"false","super-pod-size": "48", "reserve-nodes": "2"}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -277,8 +287,8 @@ rules:
     resources: ["networkpolicies"]
     verbs: ["get", "create", "delete"]
   - apiGroups: ["apps"]
-    resources: ["daemonsets", "replicasets", "statefulsets"]
-    verbs: ["get"]
+    resources: ["daemonsets", "replicasets", "statefulsets", "deployments"]
+    verbs: ["list", "watch", "get"]
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["get"]
